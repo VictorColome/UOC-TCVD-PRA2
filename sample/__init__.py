@@ -1,5 +1,9 @@
 import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
 
 # Descripción del dataset en http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
 
@@ -14,9 +18,34 @@ if __name__ == '__main__':
 
     # TODO VC: NaN values
     print(df.isna().sum())
+    # Delete workclass and occupation NaNs
+    df.dropna(subset=["workclass", "occupation"], inplace=True)
+    print(df.isna().sum())
+    # Replace native_country NaNs by UNKNOWN_OCCUPATION
+    df["native_country"] = df["native_country"].fillna("UNKNOWN_OCCUPATION")
+    print(df.isna().sum())
 
     # TODO VC: Outliers
+    df.boxplot()
+    plt.show()
 
+    fig, ax = plt.subplots(figsize=(9, 7))
+    sns.violinplot(ax=ax, data=df)  # iris.iloc[:, 0:4]
+    plt.show()
+
+    sns.pairplot(df, hue="income", palette="husl")
+    plt.show()
+
+    # TODO VC: Discretization
+    print(df.dtypes)
+    print(df.describe()['age'])
+    # Discretizar edad por rangos de edad
+    df.age = pd.cut(df.age, bins=[16, 30, 50, 65, 90], labels=["17-29", "30-49", "50-65", "+65"])
+    print(df.head())
     # TODO VC: Store data
 
     # TODO VC: Correlation
+    corr = df.corr()
+    print(corr)
+    sns.heatmap(corr, annot=True)
+    plt.show()
