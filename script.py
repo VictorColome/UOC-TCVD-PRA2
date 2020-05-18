@@ -10,7 +10,11 @@ from sklearn.preprocessing import StandardScaler
 
 # 1.- Descripción del DataSet
 '''
-    El juego de datos elegido es el Adult Data set (https://archive.ics.uci.edu/ml/datasets/adult), también conocido como el "Censo de ingresos". Éste consta de 48842 observaciones y 14 variables, las cuales se dividen en 13 variables independientes de todo tipo (continuas, categóricas, etc) y una variable dependiente referida a los ingresoscon dos posibles valores: >50K y <=50K. El objetivo original del juego de datos fue predecir en base a las variables dependientes si una persona cobraría más de 50K al año.
+    El juego de datos elegido es el Adult Data set (https://archive.ics.uci.edu/ml/datasets/adult), también conocido 
+    como el "Censo de ingresos". Éste consta de 48842 observaciones y 14 variables, las cuales se dividen en 13 
+    variables independientes de todo tipo (continuas, categóricas, etc) y una variable dependiente referida a los 
+    ingresos con dos posibles valores: >50K y <=50K. El objetivo original del juego de datos fue predecir en base a las 
+    variables dependientes si una persona cobraría más de 50K al año.
 '''
 
 # 	2.- Limpieza de datos
@@ -56,6 +60,7 @@ def read_dataset():
     print(df.head())
     return df
 
+
 def normalize(df):
     """
     Normalize all the continuous columns of the DataFrame
@@ -67,7 +72,8 @@ def normalize(df):
     colsToNorm = df[cNames]
     scaler = StandardScaler().fit(colsToNorm.values)
     df[cNames] = scaler.transform(colsToNorm.values)
-    
+
+
 def reduce_dim(df):
     """
     Attempts to reduce dimension of dataset using PCA
@@ -84,11 +90,14 @@ def reduce_dim(df):
     # Si lo aplicamos solo sobre continuas y nos quedamos luego con los PC, ¿no estaríamos perdiendo las relaciones entre las columnas
     # originales y las columnas no continuas que no forman parte del análisis PCA? O dicho de otra forma, PCA solo resume la información
     # entra las columnas que forman parte del mismo PCA, no de esas columnas con las demás, ¿correcto?
+    # Respuesta: El PCA se ha de hacer con todo el dataset, no creo que puedas hacerlo solo de algunas columnas. Yo personalmente
+    #  no haría PCA en este dataset.
     cNames = ['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss', 'hour_per_week']
-    pca = PCA(n_components = 0.95)
+    pca = PCA(n_components=0.95)
     pca.fit(df[cNames])
     reduced = pca.transform(df[cNames])
     print(reduced)
+
 
 def handle_nulls(df):
     """

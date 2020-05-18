@@ -1,3 +1,5 @@
+scikit-learn
+sklearn
 seaborn
 numpy
 pandas
