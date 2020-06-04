@@ -99,20 +99,20 @@ def reduce_dim(df):
     print(reduced)
 
 
-def handle_nulls(df):
+def handle_nulls(df: pd.DataFrame):
     """
     Deals with the NA appropiately
     ----------
     :param df: The dataframe to be processed
     :return: No return
     """
-    print("Number of NA found:"+df.isna().sum())
+    #print("Number of NA found:"+df.isna().sum())
     # Delete workclass and occupation NaNs.  
     df.dropna(subset=["workclass", "occupation"], inplace=True)
-    print(df.isna().sum())
+    #print(df.isna().sum())
     # Replace native_country NaNs by UNKNOWN_OCCUPATION
     df["native_country"] = df["native_country"].fillna("UNKNOWN_OCCUPATION")
-    print(df.isna().sum())
+    #print(df.isna().sum())
 
 
 def handle_outliers(df):
@@ -131,7 +131,7 @@ def discretization(df):
     print(df.dtypes)
     print(df.describe()['age'])
     # Discretizar edad por rangos de edad
-    df.age = pd.cut(df.age, bins=[16, 30, 50, 65, 90], labels=["17-29", "30-49", "50-65", "+65"])
+    df.age = pd.cut(df.age, bins=[16, 30, 50, 65, 90], labels=[0, 1, 2, 3])  # 0:"17-29", 1:"30-49", 2:"50-65", 3:"+65"
     print(df.head())
 
 

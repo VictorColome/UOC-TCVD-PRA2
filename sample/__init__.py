@@ -3,46 +3,24 @@ import numpy as np
 import seaborn as sns
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
+import script
 
 # Descripción del dataset en http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
 
 if __name__ == '__main__':
     # Read dataset
-    url = "http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
-    df = pd.read_csv(url, na_values=[' ?'])
-    df.columns = ["age", "workclass", "fnlwgt", "education", "education-num", "marital_status", "occupation",
-                  "relationship", "race", "sex", "capital_gain", "capital_loss", "hour_per_week", "native_country",
-                  "income"]
-    print(df.head())
+    df = script.read_dataset()
 
-    # TODO VC: NaN values
+    # VC: Nuls
     print(df.isna().sum())
-    # Delete workclass and occupation NaNs
-    df.dropna(subset=["workclass", "occupation"], inplace=True)
-    print(df.isna().sum())
-    # Replace native_country NaNs by UNKNOWN_OCCUPATION
-    df["native_country"] = df["native_country"].fillna("UNKNOWN_OCCUPATION")
+    script.handle_nulls(df)
     print(df.isna().sum())
 
     # TODO VC: Outliers
-    df.boxplot()
-    plt.show()
+    script.handle_outliers(df)
 
-    fig, ax = plt.subplots(figsize=(9, 7))
-    sns.violinplot(ax=ax, data=df)  # iris.iloc[:, 0:4]
-    plt.show()
-
-    sns.pairplot(df, hue="income", palette="husl")
-    plt.show()
-
-    # TODO VC: Discretization
-    print(df.dtypes)
-    print(df.describe()['age'])
-    # Discretizar edad por rangos de edad
-    df.age = pd.cut(df.age, bins=[16, 30, 50, 65, 90], labels=["17-29", "30-49", "50-65", "+65"])
-    print(df.head())
-    # TODO VC: Store data
+    # VC: Discretization
+    script.discretization(df)
 
     # TODO VC: Correlation
     corr = df.corr()
