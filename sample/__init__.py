@@ -3,6 +3,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import script
 
 # TODO CML
 def dataset_description(df):
