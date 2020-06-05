@@ -3,7 +3,15 @@ import numpy as np
 import seaborn as sns
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import script
+
+# TODO CML
+def dataset_description(df):
+    """
+    Prints several useful statistics about the dataset
+    :param df: The dataframe containing the dataset
+    :return: nothing
+    """
+    df.describe()
 
 # Descripción del dataset en http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
 
