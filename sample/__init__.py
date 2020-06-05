@@ -16,6 +16,7 @@ def dataset_description(df):
 
 # Descripción del dataset en http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
 
+
 if __name__ == '__main__':
     # Read dataset
     df = script.read_dataset()
@@ -26,13 +27,26 @@ if __name__ == '__main__':
     print(df.isna().sum())
 
     # TODO VC: Outliers
-    script.handle_outliers(df)
+    #script.handle_outliers(df)
 
     # VC: Discretization
-    script.discretization(df)
+    #script.discretization(df)
 
     # TODO VC: Correlation
     corr = df.corr()
     print(corr)
-    sns.heatmap(corr, annot=True)
+    #sns.heatmap(corr, annot=True)
     plt.show()
+
+    corr = df.corr()
+    fig, ax = plt.subplots(figsize=(15, 15))
+    ax.matshow(corr)
+    plt.xticks(range(len(corr.columns)), corr.columns)
+    plt.yticks(range(len(corr.columns)), corr.columns)
+    plt.show()
+
+    script.stacked_bar(df, 'sex', 'income')
+    script.stacked_bar(df, 'occupation', 'income')
+    script.stacked_bar(df, 'occupation', 'sex')
+
+    script.histogram(df, 'hour_per_week', 'Male', 'Horas trabajadas a la semana')

@@ -44,7 +44,7 @@ from sklearn.preprocessing import StandardScaler
 # los 2	4.- Conclusiones
 
 
-def read_dataset():
+def read_dataset() -> pd.DataFrame:
     """
     Read dataset into a dataframe
     ----------
@@ -52,7 +52,7 @@ def read_dataset():
     """
     url = "http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
     # We describe the known N/A values to the parse so we can deal with them later 
-    df = pd.read_csv(url, na_values=[' ?'])
+    df = pd.read_csv(url, na_values=[' ?'], skipinitialspace=True)
     # Taken from http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
     df.columns = ["age", "workclass", "fnlwgt", "education", "education_num", "marital_status", "occupation",
                   "relationship", "race", "sex", "capital_gain", "capital_loss", "hour_per_week", "native_country",
@@ -61,7 +61,7 @@ def read_dataset():
     return df
 
 
-def normalize(df):
+def normalize(df: pd.DataFrame):
     """
     Normalize all the continuous columns of the DataFrame
     ----------
@@ -74,7 +74,7 @@ def normalize(df):
     df[cNames] = scaler.transform(colsToNorm.values)
 
 
-def reduce_dim(df):
+def reduce_dim(df: pd.DataFrame):
     """
     Attempts to reduce dimension of dataset using PCA
     ----------
@@ -115,7 +115,7 @@ def handle_nulls(df: pd.DataFrame):
     #print(df.isna().sum())
 
 
-def handle_outliers(df):
+def handle_outliers(df: pd.DataFrame):
     df.boxplot()
     plt.show()
 
@@ -127,7 +127,7 @@ def handle_outliers(df):
     plt.show()
 
 
-def discretization(df):
+def discretization(df: pd.DataFrame):
     print(df.dtypes)
     print(df.describe()['age'])
     # Discretizar edad por rangos de edad
@@ -135,8 +135,20 @@ def discretization(df):
     print(df.head())
 
 
-def correlation(df):
+def correlation(df: pd.DataFrame):
     corr = df.corr()
     print(corr)
     sns.heatmap(corr, annot=True)
+    plt.show()
+
+
+def stacked_bar(df: pd.DataFrame, index, columns):
+    pivot_df = df[[index, columns]].pivot_table(index=index, columns=columns, aggfunc=len)
+    pivot_df.plot.bar(stacked=True, figsize=(15, 15))
+    plt.show()
+
+
+def histogram(df: pd.DataFrame, column, sex, title):
+    plt.hist(df.loc[df['sex'] == sex][column], label=column)
+    plt.title(title)
     plt.show()
