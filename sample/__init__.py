@@ -45,8 +45,17 @@ if __name__ == '__main__':
     plt.yticks(range(len(corr.columns)), corr.columns)
     plt.show()
 
-    script.stacked_bar(df, 'sex', 'income')
-    script.stacked_bar(df, 'occupation', 'income')
-    script.stacked_bar(df, 'occupation', 'sex')
+    script.stacked_bar(df, 'sex', 'income', 'Income por sexo')
+    script.stacked_bar(df, 'occupation', 'income', 'Income por ocupación')
+    script.stacked_bar(df, 'occupation', 'sex', 'Sexo por ocupación')
 
-    script.histogram(df, 'hour_per_week', 'Male', 'Horas trabajadas a la semana')
+    script.histogram(df, 'age', 'Male', 'Edad de los hombres')
+    script.histogram(df, 'age', 'Female', 'Edad de las mujeres')
+
+    script.histogram(df, 'hour_per_week', 'Male', 'Horas trabajadas a la semana por hombres')
+    script.histogram(df, 'hour_per_week', 'Female', 'Horas trabajadas a la semana por mujeres')
+
+    script.plot_all_occupations(df)
+    
+    script.plot_hours(df)
+

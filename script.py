@@ -52,7 +52,7 @@ def read_dataset() -> pd.DataFrame:
     """
     url = "http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
     # We describe the known N/A values to the parse so we can deal with them later 
-    df = pd.read_csv(url, na_values=[' ?'], skipinitialspace=True)
+    df = pd.read_csv(url, na_values=['?'], skipinitialspace=True)
     # Taken from http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
     df.columns = ["age", "workclass", "fnlwgt", "education", "education_num", "marital_status", "occupation",
                   "relationship", "race", "sex", "capital_gain", "capital_loss", "hour_per_week", "native_country",
@@ -107,11 +107,11 @@ def handle_nulls(df: pd.DataFrame):
     :return: No return
     """
     #print("Number of NA found:"+df.isna().sum())
-    # Delete workclass and occupation NaNs.  
-    df.dropna(subset=["workclass", "occupation"], inplace=True)
+    # Delete workclass and native_country NaNs.
+    df.dropna(subset=["workclass", "native_country"], inplace=True)
     #print(df.isna().sum())
-    # Replace native_country NaNs by UNKNOWN_OCCUPATION
-    df["native_country"] = df["native_country"].fillna("UNKNOWN_OCCUPATION")
+    # Replace occupation NaNs by UNKNOWN_OCCUPATION
+    df["occupation"] = df["occupation"].fillna("UNKNOWN_OCCUPATION")
     #print(df.isna().sum())
 
 
@@ -142,13 +142,40 @@ def correlation(df: pd.DataFrame):
     plt.show()
 
 
-def stacked_bar(df: pd.DataFrame, index, columns):
+def stacked_bar(df: pd.DataFrame, index, columns, title):
     pivot_df = df[[index, columns]].pivot_table(index=index, columns=columns, aggfunc=len)
     pivot_df.plot.bar(stacked=True, figsize=(15, 15))
+    plt.title(title)
     plt.show()
 
 
 def histogram(df: pd.DataFrame, column, sex, title):
-    plt.hist(df.loc[df['sex'] == sex][column], label=column)
+    df_aux = df.loc[df['sex'] == sex][column]
+    plt.hist(df_aux, label=sex)
+    plt.axvline(x=df_aux.mean(), c='r', label='Media = '+str(df_aux.mean()))
     plt.title(title)
+    plt.legend()
     plt.show()
+
+
+def plot_all_occupations(df: pd.DataFrame):
+    occupations = df['occupation'].unique()
+    fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(15, 15))
+    i, j = 0, 0
+    for occ in occupations:
+        df_occ = df.loc[df['occupation'] == occ]
+        pivot_df = df_occ[['sex', 'income']].pivot_table(index='sex', columns='income', aggfunc=len)
+        pivot_df.plot.bar(stacked=True, figsize=(15, 15), ax=axes[i, j])
+        axes[i, j].set_title(occ)
+        j += 1
+        if j == 3:
+            i += 1
+            j = 0
+    # fig.suptitle('Todas las ocupaciones por sexo e income', fontsize=16)
+    # fig.subplots_adjust(top=0.88)
+    fig.tight_layout()
+    plt.show()
+
+
+def plot_hours(df: pd.DataFrame):
+    plt.scatter(df.occupation, df.hour_per_week, s=df.income, c=df.sex, alpha=0.4)
