@@ -178,4 +178,12 @@ def plot_all_occupations(df: pd.DataFrame):
 
 
 def plot_hours(df: pd.DataFrame):
-    plt.scatter(df.occupation, df.hour_per_week, s=df.income, c=df.sex, alpha=0.4)
+    clr = {'Male': 'firebrick', 'Female': 'blueviolet'}
+    colors = df["sex"].apply(lambda x: clr[x])
+    szs = {'<=50K': 50, '>50K': 100}
+    sizes = df['income'].apply(lambda x: szs[x])
+
+    fig, ax = plt.subplots(figsize=(15, 5))
+    ax.scatter(df.occupation, df.hour_per_week, sizes=sizes, c=colors, alpha=0.4)
+    plt.xticks(rotation='vertical')
+    plt.show()
