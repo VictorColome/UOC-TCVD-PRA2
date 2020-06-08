@@ -4,7 +4,13 @@ import seaborn as sns
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import export_graphviz
+from sklearn import tree
+import graphviz
 
 # Descripción del dataset en http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
 
@@ -116,15 +122,30 @@ def handle_nulls(df: pd.DataFrame):
 
 
 def handle_outliers(df: pd.DataFrame):
-    df.boxplot()
-    plt.show()
-
-    fig, ax = plt.subplots(figsize=(9, 7))
-    sns.violinplot(ax=ax, data=df)  # iris.iloc[:, 0:4]
+    fig, axes1 = plt.subplots(nrows=5, ncols=3, figsize=(15, 15))
+    fig, axes2 = plt.subplots(nrows=5, ncols=3, figsize=(15, 15))
+    i, j = 0, 0
+    for col_name in df.columns:
+        # Plot 1
+        sns.boxplot(y=df[col_name], ax=axes1[i, j])
+        axes1[i, j].set_title(col_name)
+        # Plot 2
+        sns.violinplot(data=df[col_name], ax=axes2[i, j])
+        axes2[i, j].set_title(col_name)
+        # Next ax
+        j += 1
+        if j == 3:
+            i += 1
+            j = 0
     plt.show()
 
     sns.pairplot(df, hue="income", palette="husl")
     plt.show()
+
+    # Remove outliers
+    #for col_name in outliers_columns:
+    # x = df[col_name]
+    # df[col_name] = x[x.between(x.quantile(.15), x.quantile(.85))] # without outliers
 
 
 def discretization(df: pd.DataFrame):
@@ -187,3 +208,23 @@ def plot_hours(df: pd.DataFrame):
     ax.scatter(df.occupation, df.hour_per_week, sizes=sizes, c=colors, alpha=0.4)
     plt.xticks(rotation='vertical')
     plt.show()
+
+
+def classification(df: pd.DataFrame):
+    random_state = 0
+    X = df.drop(columns='income')
+    y = df['income']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_state)
+    clf = DecisionTreeClassifier(max_depth=3, random_state=random_state)
+    clf.fit(X_train, y_train)
+
+    dot_data = tree.export_graphviz(clf, out_file=None,
+                                    feature_names=X.columns,
+                                    class_names=y.unique(),
+                                    filled=True, rounded=True,
+                                    special_characters=True)
+    graphviz.Source(dot_data)
+
+    print('Cross validation accuracy = {}%'.format(cross_val_score(clf, X_test, y_test, cv=5).mean() * 100))
+    y_pred = clf.predict(X_test)
+    print("Test accuracy : %0.2f" % (accuracy_score(y_test, y_pred) * 100))
