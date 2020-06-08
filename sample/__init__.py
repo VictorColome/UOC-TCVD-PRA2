@@ -53,6 +53,6 @@ if __name__ == '__main__':
     #script.plot_hours(df)
 
     print(df.dtypes)
-    script.normalize(df)
+    df = script.normalize(df)
     print(df.dtypes)
     script.classification(df)

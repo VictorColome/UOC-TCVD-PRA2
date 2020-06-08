@@ -74,11 +74,23 @@ def normalize(df: pd.DataFrame):
     :param df: The dataframe to be processed
     :return: Nothing
     """
-    cNames = ['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss', 'hour_per_week']
-    colsToNorm = df[cNames]
-    scaler = StandardScaler().fit(colsToNorm.values)
-    df[cNames] = scaler.transform(colsToNorm.values)
+    # The objective variable "income" is out of these transformations
+    cNamesObj = ['workclass', 'education', 'marital_status', 'occupation', 'relationship', 'race', 'sex', 'native_country']
+    cNamesInt = ['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss', 'hour_per_week']
+#    colsToNorm = df[cNames]
+#    scaler = StandardScaler().fit(colsToNorm.values)
+#    df[cNames] = scaler.transform(colsToNorm.values)
 
+    # The country column has many possible values, but the most common by far is "United-States", so we will resume
+    # the information transforming this variable into a True/False, and then getting the dummies. This way we keep
+    # most of the information present in original dataset and prevent having too many dummy columns
+    df['native_country'] = df['native_country']=='United-States'
+    df[cNamesObj] = df[cNamesObj].astype('category')
+    df = pd.get_dummies(df, columns=cNamesObj)
+
+    scaler = StandardScaler().fit(df[cNamesInt].values)
+    df[cNamesInt] = scaler.fit_transform(df[cNamesInt])
+    return df
 
 def reduce_dim(df: pd.DataFrame):
     """
