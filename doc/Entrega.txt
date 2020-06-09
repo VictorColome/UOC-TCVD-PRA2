@@ -1,0 +1,3 @@
+El GIT se encuentra en la dirección https://github.com/VictorColome/UOC-TCVD-PRA2
+
+Víctor Colomé y Carlos Marcos
